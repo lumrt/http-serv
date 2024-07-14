@@ -6,13 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	// "net"
+	"net"
 )
-
 // defalut value too block err flag unused 
 var ctx = context.Background()
-
-
 // loop and get local server IP 
 func GetLocalIP() string {
 	addrs, err := net.InterfaceAddrs()
@@ -30,7 +27,7 @@ func GetLocalIP() string {
 return ""
 }
 
-const keyServerAddr = GetLocalIP
+var keyServerAddr = GetLocalIP
 // PATH handler Root
 func getRoot(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -53,6 +50,12 @@ func getHTML(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("%s : go /HTML request !",  ctx.Value(keyServerAddr))
 	io.WriteString(w, "Welcome om the main HTML index !\n")
+	ip := GetLocalIP()
+	if ip == "" {
+		fmt.Printf("No IP adress found")
+	} else {
+		fmt.Printf("local IP adress : ", ip)
+	}
 }
 
 func main() {
@@ -61,6 +64,7 @@ func main() {
 	mux.HandleFunc("/test", getTest)
 	mux.HandleFunc("/HTML", getHTML)
 	err := http.ListenAndServe(":3333", mux)
+	
 	// si l'erreur correspond au code erreur d'un serveur http ferme
 	if errors.Is(err, http.ErrServerClosed) {
 		fmt.Printf("server closed\n")
