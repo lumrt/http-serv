@@ -9,27 +9,29 @@ import (
 	// "net"
 )
 
+// defalut value too block err flag unused 
 var ctx = context.Background()
 
-const keyServerAddr = "serverAddr"
 
-
+// loop and get local server IP 
 func GetLocalIP() string {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		return ""
 	}
 	for _, address := range addrs {
-		// Vérifiez le type d'adresse et si elle n'est pas bouclante
+		
 		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil { // Assurez-vous que l'adresse est IPv4
-				return ipnet.IP.String()
-			}
+			if ipnet.IP.To4() != nil {// Check if IPV4 addr
+			return ipnet.IP.String()
 		}
 	}
-	return ""
+}
+return ""
 }
 
+const keyServerAddr = GetLocalIP
+// PATH handler Root
 func getRoot(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	
@@ -37,6 +39,7 @@ func getRoot(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "This is my Webserv !\n")
 }
 
+// PATH handler test
 func getTest(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -44,6 +47,7 @@ func getTest(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Hi , HTTP !\n")
 }
 
+// PATH handler HTML
 func getHTML(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
